@@ -1,7 +1,7 @@
 import { ApolloServer } from "@apollo/server";
 import cors from "cors";
 import express from "express";
-import { expressMiddleware } from '@apollo/server/express4';
+import { expressMiddleware } from "@apollo/server/express4";
 import { expressjwt } from "express-jwt";
 import { readFile } from "fs/promises";
 import jwt from "jsonwebtoken";
@@ -25,12 +25,13 @@ app.use(
     algorithms: ["HS256"],
     credentialsRequired: false,
     secret: JWT_SECRET,
-  }),
-  expressMiddleware(apolloServer)
+  })
 );
+app.use("/graphql", expressMiddleware(apolloServer));
 
 app.post("/login", async (req, res) => {
   const { email, password } = req.body;
+  console.log("email", email, password);
   const user = await User.findOne((user) => user.email === email);
   if (user && user.password === password) {
     const token = jwt.sign({ sub: user.id }, JWT_SECRET);

@@ -3,7 +3,7 @@
 // better security
 
 const ACCESS_TOKEN_KEY = 'accessToken';
-const API_URL = 'http://localhost:9000';
+const API_URL = 'http://localhost:3001';
 
 export function getAccessToken() {
   return localStorage.getItem(ACCESS_TOKEN_KEY);
@@ -17,6 +17,7 @@ export async function login(email, password) {
     },
     body: JSON.stringify({ email, password }),
   });
+  console.log('response', response)
   if (response.ok) {
     const { token } = await response.json();
     localStorage.setItem(ACCESS_TOKEN_KEY, token);
