@@ -62,14 +62,12 @@ export const createJob = async (input) => {
     mutation createJobMutation($input: CreateJobInput!) {
       job: createJob(input: $input) {
         id
-        title
-        description
       }
     }
   `;
 
   const variables = { input };
   const { job } = await request(GRAPHQL_URL, query, variables);
-  
+
   return job;
 };
