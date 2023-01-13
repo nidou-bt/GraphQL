@@ -27,11 +27,15 @@ app.use(
     secret: JWT_SECRET,
   })
 );
-app.use("/graphql", expressMiddleware(apolloServer));
+app.use(
+  "/graphql",
+  expressMiddleware(apolloServer, {
+    context: async ({ req }) => ({ auth: req.auth }),
+  })
+);
 
 app.post("/login", async (req, res) => {
   const { email, password } = req.body;
-  console.log("email", email, password);
   const user = await User.findOne((user) => user.email === email);
   if (user && user.password === password) {
     const token = jwt.sign({ sub: user.id }, JWT_SECRET);

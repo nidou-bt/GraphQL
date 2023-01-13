@@ -3,12 +3,18 @@ import { Company, Job } from "./db.js";
 export const resolvers = {
   Query: {
     job: (_root, { id }) => Job.findById(id),
-    jobs: () => Job.findAll(),
+    jobs: async () => await Job.findAll(),
+
     company: (_root, { id }) => Company.findById(id),
   },
 
   Mutation: {
-    createJob: (_root, { input }) => Job.create(input),
+    createJob: (_root, { input }, { auth }) => {
+      if (!auth) {
+        throw new Error('Unauthorize')
+      }
+      return Job.create(input);
+    },
     deleteJob: (_root, { id }) => Job.delete(id),
     updateJob: (_root, { input }) => Job.update(input),
   },
