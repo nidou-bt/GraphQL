@@ -18,6 +18,14 @@ const typeDefs = await readFile("./schema.graphql", "utf8");
 const apolloServer = new ApolloServer({ typeDefs, resolvers });
 await apolloServer.start();
 
+const context = async ({ req }) => {
+  if (req.auth) {
+    const user = await User.findById(req.auth.sub);
+    return { user };
+  }
+  return {};
+};
+
 app.use(
   cors(),
   express.json(),
@@ -30,7 +38,7 @@ app.use(
 app.use(
   "/graphql",
   expressMiddleware(apolloServer, {
-    context: async ({ req }) => ({ auth: req.auth }),
+    context,
   })
 );
 
