@@ -3,18 +3,25 @@ import { getAccessToken } from "../auth";
 
 const GRAPHQL_URL = "http://localhost:3001/graphql";
 
+const JOB_DETAIL_FRAGMENT = gql`
+  fragment JobDetail on Job {
+    id
+    title
+    company {
+      id
+      name
+    }
+    description
+  }
+`;
+
 const JOB_QUERY = gql`
   query Jobquery($id: ID!) {
     job(id: $id) {
-      title
-      id
-      company {
-        id
-        name
-      }
-      description
+      ...JobDetail
     }
   }
+  ${JOB_DETAIL_FRAGMENT}
 `;
 
 const client = new ApolloClient({
@@ -34,13 +41,10 @@ export const getJobs = async () => {
   const query = gql`
     query {
       jobs {
-        id
-        title
-        company {
-          name
-        }
+        ...JobDetail
       }
     }
+    ${JOB_DETAIL_FRAGMENT}
   `;
 
   const {
